@@ -11,7 +11,7 @@ python FscanOutputBeautif.py result.txt `推荐Py3.9+运行`
 
 ## BUG
 如果出现bug,欢迎提交issues 顺便附带上报错截图和对应数据`去除下敏感信息就行` 方便我调试🫰🏻
-
+<hr>
 
 ![image-20231116151716306](https://ltaicd.oss-cn-chengdu.aliyuncs.com/img/image-20231116151716306.png)
 ![image](https://github.com/yz1639/FscanOutputBeautify/assets/44149984/a1cd0513-dbc0-4067-b71b-793c0de0517f)
