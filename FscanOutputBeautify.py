@@ -202,8 +202,9 @@ class FscanBeautify:
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        log.critical("未提供文件 python3 FscanBeautify.py results.txt")
+        cs.print('[red]请提供文件[/]: [blue]python3 FscanBeautify.py results.txt')
     elif os.path.exists(sys.argv[1]):
         FscanBeautify(sys.argv[1]).run()
     else:
-        log.critical(f"{sys.argv[1]} 不存在")
+        cs.print(f"[red]文件 {sys.argv[1]} 不存在")
+
