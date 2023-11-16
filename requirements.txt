@@ -1,0 +1,4 @@
+loguru==0.6.0
+pandas==1.5.3
+rich==13.7.0
+openpyxl
