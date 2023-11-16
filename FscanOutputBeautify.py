@@ -21,7 +21,7 @@ cs = Console(log_path=False)
 
 class FscanBeautify:
     def __init__(self, file):
-        self.p = ['存活IP段', '开放端口', '系统', 'Exp', 'Poc', '网站标题', '弱口令']
+        self.p = ['存活IP段', '开放端口', '系统', 'Exp', 'Poc', '网站标题', '弱口令', '指纹']
         self.AliveIp = []
         self.OpenPort = []
         self.OsList = []
@@ -29,6 +29,7 @@ class FscanBeautify:
         self.PocList = []
         self.TitleList = []
         self.WeakPasswd = []
+        self.Finger = []
         self.filePath: str = file
 
     def readFile(self) -> str:
@@ -65,7 +66,6 @@ class FscanBeautify:
                     "IP": ip,
                     "OS": oss
                 })
-                cs.print(OsList)
 
             ExpList = "".join(re.findall(r"\[\+]\s\d+\.\d+\.\d+\.\d+.*", data))
             if ExpList:
@@ -154,6 +154,14 @@ class FscanBeautify:
                     "User&Passwd": passwd,
                     "info": ''
                 })
+            Finger = "".join(re.findall(r'.*InfoScan.*', data))
+            if Finger:
+                url = "".join(re.findall(r'http\S+', Finger))
+                finger = Finger.split(url)[-1].strip()[1:-1]
+                self.Finger.append({
+                    "Url": url,
+                    "Finger": finger,
+                })
 
     def saveFile(self):
         fileName = f'outPut_{time.strftime("%Y-%m-%d_%H%M%S", time.localtime())}.xlsx'
@@ -169,7 +177,7 @@ class FscanBeautify:
         with pd.ExcelWriter(fileName) as writer:
             for index, s in enumerate(
                     [self.AliveIp, self.OpenPort, self.OsList, self.ExpList, self.PocList, self.TitleList,
-                     self.WeakPasswd]):
+                     self.WeakPasswd, self.Finger]):
                 if s:
                     df = pd.DataFrame(s)
                     df.to_excel(writer, sheet_name=self.p[index], index=False)
@@ -181,7 +189,7 @@ class FscanBeautify:
         table.add_column("项目", justify="center", style="red")
         table.add_column("个数", style="magenta", justify="center")
         for index, s in enumerate([self.AliveIp, self.OpenPort, self.OsList, self.ExpList, self.PocList, self.TitleList,
-                                   self.WeakPasswd]):
+                                   self.WeakPasswd, self.Finger]):
             if s:
                 table.add_row(self.p[index], str(len(s)))
         cs.print(table)
