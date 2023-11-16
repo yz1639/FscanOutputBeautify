@@ -14,3 +14,5 @@ python FscanOutputBeautif.py result.txt `推荐Py3.9+运行`
 
 
 ![image-20231116151716306](https://ltaicd.oss-cn-chengdu.aliyuncs.com/img/image-20231116151716306.png)
+![image](https://github.com/yz1639/FscanOutputBeautify/assets/44149984/a1cd0513-dbc0-4067-b71b-793c0de0517f)
+
