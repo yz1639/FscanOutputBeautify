@@ -11,7 +11,6 @@ import sys
 import time
 
 import pandas as pd
-from loguru import logger as log
 from rich.console import Console
 from rich.table import Table
 from rich import box
