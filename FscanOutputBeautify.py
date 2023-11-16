@@ -77,7 +77,7 @@ class FscanBeautify:
 
             PocList = "".join(re.findall(r"\[\+]\shttp\S.*", data))
             if PocList:
-                url = "".join(re.findall(r"(?P<url>https?://\S+)", PocList))
+                url = "".join(re.findall(r"(https?://\S+)", PocList))
                 poc = PocList.replace(url, '').replace("[+]", "").replace('\t', '').strip()
                 self.PocList.append({
                     "Url": url,
