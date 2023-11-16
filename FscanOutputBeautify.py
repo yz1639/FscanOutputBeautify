@@ -112,7 +112,7 @@ class FscanBeautify:
                     "IP": ip,
                     "Port": int(port),
                     "User&Passwd": passwd,
-                    "info": ''
+                    "Info": ''
                 })
 
             WeakPasswd = re.findall(r'((redis|Mongodb)(:|\s).*)', data, re.I)
@@ -136,7 +136,7 @@ class FscanBeautify:
                     "IP": ip,
                     "Port": int(port),
                     "User&Passwd": passwd,
-                    "info": info
+                    "Info": info
                 })
 
             WeakPasswd = re.findall(r"((Memcached)(:|\s).*)", data, re.I)
@@ -151,7 +151,7 @@ class FscanBeautify:
                     "IP": ip,
                     "Port": int(port),
                     "User&Passwd": passwd,
-                    "info": ''
+                    "Info": ''
                 })
             Finger = "".join(re.findall(r'.*InfoScan.*', data))
             if Finger:
