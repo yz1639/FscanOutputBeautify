@@ -4,7 +4,7 @@
 # @Author  : ltaicd
 # @File    : FscanBeautify.py
 # @Software: PyCharm
-# @Version: 1.0
+# @Version: 1.1
 import os.path
 import re
 import sys
@@ -97,6 +97,9 @@ class FscanBeautify:
                     "Title": title
                 })
 
+            if "://" not in data:
+                # 2024-03-13 修复1.8.3 不带://的问题 -> 替换为旧版的显示方式
+                data = data.replace("ftp ", "ftp://")
             WeakPasswd = re.findall(r'((ftp|mysql|mssql|SMB|RDP|Postgres|SSH|oracle|SMB2-shares)(:|\s).*)', data, re.I)
             if WeakPasswd:
                 WeakPasswd = WeakPasswd[0][0].split(":")
@@ -206,4 +209,3 @@ if __name__ == '__main__':
         FscanBeautify(sys.argv[1]).run()
     else:
         cs.print(f"[red]文件 {sys.argv[1]} 不存在")
-
