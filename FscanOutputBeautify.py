@@ -4,7 +4,7 @@
 # @Author  : ltaicd
 # @File    : FscanBeautify.py
 # @Software: PyCharm
-# @Version: 1.1
+# @Version: 1.0.1
 import os.path
 import re
 import sys
@@ -97,19 +97,25 @@ class FscanBeautify:
                     "Title": title
                 })
 
-            if "://" not in data:
-                # 2024-03-13 修复1.8.3 不带://的问题 -> 替换为旧版的显示方式
-                data = data.replace("ftp ", "ftp://")
             WeakPasswd = re.findall(r'((ftp|mysql|mssql|SMB|RDP|Postgres|SSH|oracle|SMB2-shares)(:|\s).*)', data, re.I)
             if WeakPasswd:
                 WeakPasswd = WeakPasswd[0][0].split(":")
                 try:
                     passwd = WeakPasswd[3]
                 except IndexError as e:
-                    passwd = ''
-                protocol = WeakPasswd[0]
-                port = WeakPasswd[2]
-                ip = "".join(re.findall(r"\d+\.\d+\.\d+\.\d+", str(WeakPasswd[1])))
+                    if len(WeakPasswd) == 3:
+                        passwd = WeakPasswd[2]
+                    else:
+                        passwd = ''
+                protocol = WeakPasswd[0] if " " not in WeakPasswd[0] else WeakPasswd[0].split(" ")[0]
+                try:
+                    port = int(WeakPasswd[2])
+
+                except ValueError as e:
+                    port = WeakPasswd[1]
+                ip = "".join(
+                    re.findall(r"\d+\.\d+\.\d+\.\d+", str(WeakPasswd[1])) if "." in WeakPasswd[1] else re.findall(
+                        r"\d+\.\d+\.\d+\.\d+", str(WeakPasswd[0])))
                 self.WeakPasswd.append({
                     "Protocol": protocol,
                     "IP": ip,
