@@ -4,7 +4,7 @@
 # @Author  : ltaicd
 # @File    : FscanBeautify.py
 # @Software: PyCharm
-# @Version: 1.0.3
+# @Version: 1.0.4
 import os.path
 import re
 import sys
@@ -84,6 +84,15 @@ class FscanBeautify:
                     "Poc": poc
                 })
 
+            PocList = "".join(re.findall(r"\[\+]\sPocScan\shttp\S.*", data))
+            if PocList:
+                url = "".join(re.findall(r"(https?://\S+)", PocList))
+                poc = PocList.split(" ")[3]
+                self.PocList.append({
+                    "Url": url,
+                    "Poc": poc
+                })
+
             TitleList = "".join(re.findall(r'\[\*]\sWebTitle.*', data))
             if TitleList:
                 url = "".join(re.findall(r"http\S+", TitleList)[0])
@@ -98,7 +107,7 @@ class FscanBeautify:
                 })
 
             WeakPasswd = re.findall(r'((ftp|mysql|mssql|SMB|RDP|Postgres|SSH|oracle|SMB2-shares)(:|\s).*)', data, re.I)
-            if WeakPasswd:
+            if WeakPasswd and "title" not in data:
                 WeakPasswd = WeakPasswd[0][0].split(":")
                 try:
                     passwd = WeakPasswd[3]
