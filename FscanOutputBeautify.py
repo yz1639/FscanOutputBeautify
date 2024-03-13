@@ -4,7 +4,7 @@
 # @Author  : ltaicd
 # @File    : FscanBeautify.py
 # @Software: PyCharm
-# @Version: 1.0.1
+# @Version: 1.0.3
 import os.path
 import re
 import sys
@@ -128,17 +128,29 @@ class FscanBeautify:
             if WeakPasswd:
                 rd_all = WeakPasswd[0][0].split(" ")
                 passwd = rd_all[-1] if 'file' not in "".join(rd_all[-2:]) else rd_all[1]
+                if ":" in passwd:
+                    passwd = rd_all[2]
+                if str(passwd).count("/") >= 3:
+                    passwd = ""
+
                 if "".join(rd_all[1:4]) == 'likecanwrite':
                     passwd = ''
                 protocol = WeakPasswd[0][1]
                 if protocol.lower() == 'redis':
                     if "".join(rd_all[1:4]) != 'likecanwrite':
                         info = " ".join(rd_all[2:])
+                        if len(rd_all) == 3:
+                            info = ""
                     else:
                         info = " ".join(rd_all[1:])
                 else:
                     info = ''
-                port = (rd_all[0].split(":"))[2]
+                if " " in info:
+                    info = rd_all[-1]
+                try:
+                    port = rd_all[0].split(":")[2]
+                except IndexError:
+                    port = rd_all[1].split(":")[1]
                 ip = "".join(re.findall(r"\d+\.\d+\.\d+\.\d+", WeakPasswd[0][0]))
                 self.WeakPasswd.append({
                     "Protocol": protocol,
