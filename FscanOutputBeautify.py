@@ -4,7 +4,7 @@
 # @Author  : ltaicd
 # @File    : FscanBeautify.py
 # @Software: PyCharm
-# @Version: 1.0.4
+# @Version: 1.0.5
 import os.path
 import re
 import sys
@@ -107,7 +107,7 @@ class FscanBeautify:
                 })
 
             WeakPasswd = re.findall(r'((ftp|mysql|mssql|SMB|RDP|Postgres|SSH|oracle|SMB2-shares)(:|\s).*)', data, re.I)
-            if WeakPasswd and "title" not in data:
+            if WeakPasswd and "title" not in data and '[->]' not in data:
                 WeakPasswd = WeakPasswd[0][0].split(":")
                 try:
                     passwd = WeakPasswd[3]
