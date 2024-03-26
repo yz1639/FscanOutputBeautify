@@ -4,7 +4,7 @@
 # @Author  : ltaicd
 # @File    : FscanBeautify.py
 # @Software: PyCharm
-# @Version: 1.0.5
+# @Version: 1.0.6
 import os.path
 import re
 import sys
@@ -66,10 +66,32 @@ class FscanBeautify:
                     "OS": oss
                 })
 
+            # 1.8.3
+            OsList = "".join(re.findall(r"\[\*]\sOsInfo\s\d+\.\d+\.\d+\.\d+.*", data))
+            if OsList:
+                ip = "".join(re.findall(r"\d+\.\d+\.\d+\.\d+", OsList))
+                for s in ["[*]", '\t', "\x01", '\x02', ip]:
+                    OsList.replace(s, "")
+                oss = re.findall(r"\(.*\)", OsList, re.S)[0] if re.findall(r"\(.*\)", OsList, re.S) else OsList
+                self.OsList.append({
+                    "IP": ip,
+                    "OS": oss.replace("(", "").replace(")", "")
+                })
+
             ExpList = "".join(re.findall(r"\[\+]\s\d+\.\d+\.\d+\.\d+.*", data))
             if ExpList:
                 ip = "".join(re.findall(r"\d+\.\d+\.\d+\.\d+", ExpList))
                 exp = ExpList.replace(ip, '').replace("[+]", "").replace('\t', '').strip()
+                self.ExpList.append({
+                    "IP": ip,
+                    "Exp": exp
+                })
+
+            # 1.8.3
+            ExpList = "".join(re.findall(r"\[\+]\s[a-zA-Z0-9-]+\s\d+\.\d+\.\d+\.\d+\s\(.*\)", data))
+            if ExpList:
+                ip = "".join(re.findall(r"\d+\.\d+\.\d+\.\d+", ExpList))
+                exp = ExpList.split(" ")[1]
                 self.ExpList.append({
                     "IP": ip,
                     "Exp": exp
@@ -84,6 +106,7 @@ class FscanBeautify:
                     "Poc": poc
                 })
 
+            # 1.8.3
             PocList = "".join(re.findall(r"\[\+]\sPocScan\shttp\S.*", data))
             if PocList:
                 url = "".join(re.findall(r"(https?://\S+)", PocList))
@@ -107,8 +130,10 @@ class FscanBeautify:
                 })
 
             WeakPasswd = re.findall(r'((ftp|mysql|mssql|SMB|RDP|Postgres|SSH|oracle|SMB2-shares)(:|\s).*)', data, re.I)
+
             if WeakPasswd and "title" not in data and '[->]' not in data:
                 WeakPasswd = WeakPasswd[0][0].split(":")
+                error = True
                 try:
                     passwd = WeakPasswd[3]
                 except IndexError as e:
@@ -122,16 +147,20 @@ class FscanBeautify:
 
                 except ValueError as e:
                     port = WeakPasswd[1]
-                ip = "".join(
-                    re.findall(r"\d+\.\d+\.\d+\.\d+", str(WeakPasswd[1])) if "." in WeakPasswd[1] else re.findall(
-                        r"\d+\.\d+\.\d+\.\d+", str(WeakPasswd[0])))
-                self.WeakPasswd.append({
-                    "Protocol": protocol,
-                    "IP": ip,
-                    "Port": int(port),
-                    "User&Passwd": passwd,
-                    "Info": ''
-                })
+                except IndexError as e:
+                    error = False
+
+                if error:
+                    ip = "".join(
+                        re.findall(r"\d+\.\d+\.\d+\.\d+", str(WeakPasswd[1])) if "." in WeakPasswd[1] else re.findall(
+                            r"\d+\.\d+\.\d+\.\d+", str(WeakPasswd[0])))
+                    self.WeakPasswd.append({
+                        "Protocol": protocol,
+                        "IP": ip,
+                        "Port": int(port),
+                        "User&Passwd": passwd,
+                        "Info": ''
+                    })
 
             WeakPasswd = re.findall(r'((redis|Mongodb)(:|\s).*)', data, re.I)
             if WeakPasswd:
